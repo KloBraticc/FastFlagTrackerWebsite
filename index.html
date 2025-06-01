@@ -213,6 +213,22 @@
         </nav>
     </header>
 
+    <div id="views-counter" style="font-family: 'Inter', sans-serif; font-weight: 600; text-align: center; padding: 10px;">
+        Website views: <span id="views">Loading...</span>
+    </div>
+
+    <script>
+        fetch('https://api.countapi.xyz/hit/roblox-fflag-tracker/visits')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('views').textContent = data.value;
+            })
+            .catch(() => {
+                document.getElementById('views').textContent = 'N/A';
+            });
+    </script>
+
+
     <section class="features" aria-label="Features">
         <article class="card">
             <h3>Search for FFlags</h3>
@@ -532,7 +548,6 @@
                 outline: none;
                 box-shadow: 0 0 8px 2px rgba(90, 157, 249, 0.4);
             }
-
     </style>
 
 
