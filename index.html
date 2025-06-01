@@ -295,6 +295,42 @@
                 Expand
             </button>
 
+            <button id="checkFFlagsBtn" class="download-btn" style="
+      margin-bottom: 15px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: none;
+      background: #5A9DF9;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-width: 110px;
+    ">
+                Check FFlags (Beta)
+            </button>
+
+            <button id="RefreshBtn" class="download-btn" style="
+      margin-bottom: 15px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: none;
+      background: #5A9DF9;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-width: 110px;
+    ">
+                Refresh
+            </button>
+            <script>
+                document.getElementById('RefreshBtn').addEventListener('click', function () {
+                    location.reload();
+                });
+            </script>
             <select id="jsonSelector" style="
       width: 100%;
       padding: 10px 15px;
@@ -383,33 +419,74 @@
         let isJsonData = true;
         let isZoomed = false;
 
-        function syntaxHighlight(json) {
-            if (typeof json !== "string") {
-                json = JSON.stringify(json, null, 2);
+        function syntaxHighlight(input) {
+            let jsonString;
+
+            if (typeof input !== "string") {
+                jsonString = JSON.stringify(input, null, 2);
+            } else {
+                try {
+                    const parsed = JSON.parse(input);
+                    jsonString = JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    return escapeHtml(input);
+                }
             }
-            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?:\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
+            jsonString = jsonString
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            const regex = /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(?:\s*:)?|\b(true|false|null)\b|-?\d+(\.\d*)?([eE][+\-]?\d+)?)/g;
+
+            return jsonString.replace(regex, match => {
                 let cls = 'number';
-                if (/^"/.test(match)) {
-                    cls = /:$/.test(match) ? 'key' : 'string';
-                } else if (/true|false/.test(match)) {
+
+                if (match.startsWith('"')) {
+                    cls = match.endsWith(':') ? 'key' : 'string';
+                } else if (match === 'true' || match === 'false') {
                     cls = 'boolean';
-                } else if (/null/.test(match)) {
+                } else if (match === 'null') {
                     cls = 'null';
                 }
+
                 return `<span class="${cls}">${match}</span>`;
             });
         }
 
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
         function updateDisplay(filtered) {
+            let isJsonData = false;
+            let parsedData;
+
+            if (typeof filtered === 'string') {
+                try {
+                    parsedData = JSON.parse(filtered);
+                    isJsonData = true;
+                } catch {
+                    isJsonData = false;
+                }
+            } else if (typeof filtered === 'object' && filtered !== null) {
+                isJsonData = true;
+                parsedData = filtered;
+            }
+
             if (isJsonData) {
-                jsonContent.innerHTML = syntaxHighlight(filtered);
-                resultsCount.textContent = `Showing ${Object.keys(filtered).length} result${Object.keys(filtered).length === 1 ? '' : 's'}`;
+                jsonContent.innerHTML = syntaxHighlight(parsedData);
+                const count = typeof parsedData === 'object' ? Object.keys(parsedData).length : 0;
+                resultsCount.textContent = `Showing ${count} result${count === 1 ? '' : 's'}`;
             } else {
                 jsonContent.textContent = filtered;
                 resultsCount.textContent = '';
             }
         }
+
 
         async function loadData(url) {
             searchBox.value = '';
@@ -479,8 +556,47 @@
             }
         }
 
+
+
+
+
+
+
+        function performSearch(query) {
+            if (!query) {
+                updateDisplay(originalData);
+                resultsCount.textContent = '';
+                return;
+            }
+
+            if (isJsonData) {
+                const filtered = filterJsonData(originalData, query);
+                updateDisplay(filtered);
+                if (Array.isArray(filtered)) {
+                    resultsCount.textContent = `Results: ${filtered.length}`;
+                } else if (typeof filtered === 'object') {
+                    resultsCount.textContent = `Results: ${Object.keys(filtered).length}`;
+                } else {
+                    resultsCount.textContent = '';
+                }
+            } else {
+                if (originalData.toLowerCase().includes(query.toLowerCase())) {
+                    updateDisplay(originalData);
+                    resultsCount.textContent = 'Result found';
+                } else {
+                    updateDisplay('No results found');
+                    resultsCount.textContent = 'Result found: 0';
+                }
+            }
+        }
+
+
+
+
+
+
+
         async function fetchLastUpdated(url) {
-            // Attempt to get last modified header
             try {
                 const response = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
                 if (response.ok) {
@@ -502,7 +618,7 @@
         searchBox.addEventListener('input', () => {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
-                if (!originalData || Object.keys(originalData).length === 0) {
+                if (!originalData || (typeof originalData === 'object' && Object.keys(originalData).length === 0)) {
                     return;
                 }
                 const query = searchBox.value.trim().toLowerCase();
@@ -512,7 +628,6 @@
                 }
 
                 if (isJsonData) {
-                    // Filter keys that include the search query
                     const filtered = Object.keys(originalData).reduce((acc, key) => {
                         if (key.toLowerCase().includes(query)) {
                             acc[key] = originalData[key];
@@ -520,6 +635,15 @@
                         return acc;
                     }, {});
                     updateDisplay(filtered);
+
+                } else if (Array.isArray(originalData) && originalData.length > 0 && typeof originalData[0] === 'object' && 'text' && 'txt' in originalData[0]) {
+                    const filteredItems = originalData.filter(item =>
+                        item.text && item.text.toLowerCase().includes(query)
+                    );
+                    updateDisplay(filteredItems);
+
+                    resultsCount.textContent = `Showing ${filteredItems.length} item${filteredItems.length === 1 ? '' : 's'}`;
+
                 } else {
                     const lines = originalData.split('\n');
                     const filteredLines = lines.filter(line => line.toLowerCase().includes(query));
@@ -528,6 +652,7 @@
                 }
             }, 300);
         });
+
 
         blurToggle.addEventListener("click", () => {
             isBlurred = !isBlurred;
@@ -540,7 +665,7 @@
             if (isZoomed) {
                 glassDiv.style.height = "auto";
                 glassDiv.style.boxShadow = "0 16px 48px rgba(0, 0, 0, 0.75)";
-                glassDiv.style.transform = "scale(1.1)"; 
+                glassDiv.style.transform = "scale(1.1)";
                 zoomToggle.textContent = "Shrink";
             } else {
                 glassDiv.style.height = "auto";
@@ -554,8 +679,6 @@
         jsonSelector.addEventListener("change", () => {
             loadData(jsonSelector.value);
         });
-
-        // Initial load
         loadData(jsonSelector.value);
     </script>
 
@@ -582,20 +705,243 @@
         }
     </style>
 
-    
-    <section class="changelog" aria-label="Changelog">
+    <div id="fflagModal" style="
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
+        <div style="
+    background-color: #fff;
+    margin: 50% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  ">
+            <h3 style="
+      margin-top: 0;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #222;
+      margin-bottom: 20px;
+    ">
+                Enter FFlags
+            </h3>
+            <input type="text" id="fflagInput" placeholder="(e.g. FFlagDebugDisplayFPS)" style="
+      width: 100%;
+      padding: 15px 50px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      outline-offset: 1px;
+    " onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#ddd'">
+
+            <div style="
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 25px;
+    ">
+                <button id="cancelFflagBtn" style="
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        color: #555;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      " onmouseover="this.style.backgroundColor='#d9d9d9'" onmouseout="this.style.backgroundColor='#f0f0f0'">
+                    Cancel
+                </button>
+                <button id="submitFflagBtn" style="
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      " onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        const checkFFlagsBtn = document.getElementById("checkFFlagsBtn");
+        const fflagModal = document.getElementById("fflagModal");
+        const fflagInput = document.getElementById("fflagInput");
+        const submitFflagBtn = document.getElementById("submitFflagBtn");
+        const cancelFflagBtn = document.getElementById("cancelFflagBtn");
+
+        checkFFlagsBtn.addEventListener("click", () => {
+            fflagInput.value = "";
+            fflagModal.style.display = "block";
+            fflagInput.focus();
+        });
+
+        cancelFflagBtn.addEventListener("click", () => {
+            fflagModal.style.display = "none";
+        });
+
+        window.addEventListener("click", (e) => {
+            if (e.target === fflagModal) {
+                fflagModal.style.display = "none";
+            }
+        });
+
+        submitFflagBtn.addEventListener("click", async () => {
+            let rawInput = fflagInput.value.trim();
+
+            if (!rawInput) {
+                alert("Please enter at least one FFlag to search.");
+                return;
+            }
+
+            let keys = [];
+
+            const looksLikeJson = rawInput.includes("{") && rawInput.includes("}") || rawInput.includes(":");
+
+            if (looksLikeJson) {
+                if (rawInput.startsWith("{") && rawInput.endsWith("}")) {
+                    rawInput = rawInput.slice(1, -1).trim();
+                }
+                const keyRegex = /["']?([\w$]+)["']?\s*:/g;
+                let match;
+                while ((match = keyRegex.exec(rawInput)) !== null) {
+                    keys.push(match[1]);
+                }
+                if (keys.length === 0) {
+                    alert("No valid FFlag keys found in input.");
+                    return;
+                }
+            } else {
+                if (rawInput.includes(",")) {
+                    keys = rawInput.split(",").map(k => k.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+                } else {
+                    keys = [rawInput];
+                }
+            }
+
+            const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            const regexes = keys.map(key => {
+                const escapedKey = escapeRegex(key);
+                return new RegExp(
+                    `^\\s*["']?${escapedKey}["']?\\s*:\\s*` +
+                    `(` +
+                    `true|false|` +
+                    `"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|` +
+                    `\\d+(?:\\.\\d+)?` +
+                    `)\\s*,?`,
+                    "i"
+                );
+            });
+
+            fflagModal.style.display = "none";
+            const options = Array.from(jsonSelector.options);
+            let results = [];
+
+            for (const option of options) {
+                const url = option.value;
+                try {
+                    const response = await fetch(url, { cache: "no-cache" });
+                    const data = await response.text();
+                    const lines = data.split(/\r?\n/);
+
+                    let matchedLines = [];
+                    for (const regex of regexes) {
+                        matchedLines.push(...lines.filter(line => regex.test(line)));
+                    }
+                    matchedLines = [...new Set(matchedLines)];
+
+                    if (matchedLines.length > 0) {
+                        results.push({
+                            source: option.textContent,
+                            matches: matchedLines
+                        });
+                    }
+                } catch (err) {
+                    results.push({
+                        source: option.textContent,
+                        matches: [`Error fetching from ${url}: ${err.message}`]
+                    });
+                }
+            }
+
+            let foundKeys = new Set();
+            for (const res of results) {
+                for (const line of res.matches) {
+                    const keyMatch = line.match(/^\s*["']?([\w$]+)["']?\s*:/);
+                    if (keyMatch) {
+                        foundKeys.add(keyMatch[1]);
+                    }
+                }
+            }
+
+            const notFoundKeys = keys.filter(k => !foundKeys.has(k));
+
+            if (results.length === 0 && notFoundKeys.length === keys.length) {
+                jsonContent.textContent = `No matches found for [${keys.join(", ")}] in any FFlag sources.`;
+            } else {
+                jsonContent.innerHTML = "";
+
+                if (results.length > 0) {
+                    jsonContent.innerHTML += results.map(result => {
+                        return `<div style="margin-bottom:1em;">
+                                            <strong style="color:#5A9DF9;">${result.source}</strong><br>
+                                            <code style="white-space: pre-wrap;">${result.matches.join("\n")}</code>
+                                        </div>`;
+                    }).join("");
+                }
+
+                if (notFoundKeys.length > 0) {
+                    jsonContent.innerHTML += `<div style="margin-top:1em; color:red;">
+                                        <strong>Not found FFlags:</strong><br> ${notFoundKeys.map(k => `<code>${k}</code>`).join(", ")}
+                                    </div>`;
+                }
+            }
+
+            resultsCount.textContent = `Checked ${options.length} sources. Found ${results.reduce((acc, r) => acc + r.matches.length, 0)} result(s).`;
+        });
+    </script>
+
+    <section class="changelog" aria-label="Changelog" role="region">
         <div class="glass">
-            <h3>Changelog</h3>
-            <ul>
-                <li><strong>v1.0.1</strong> Initial release.</li>
-                <li><time datetime="2025-05-31">May 31, 2025</time> Added blurred background effect.</li>
-                <li><time datetime="2025-05-31">May 31, 2025</time> Fixed performance issues.</li>
-                <li><time datetime="2025-05-31">May 31, 2025</time> Improved network optimizations.</li>
-                <li><time datetime="2025-05-31">May 31, 2025</time> Enhanced search functionality.</li>
-                <li><time datetime="2025-05-31">May 31, 2025</time> Added custom scrollbar UI.</li>
-            </ul>
+            <h2>Changelog</h2>
+
+            <article class="version" aria-labelledby="version-1-0-2">
+                <h3 id="version-1-0-2"><strong>v1.0.2</strong> <time datetime="2025-05-31">May 31, 2025</time></h3>
+                <ul>
+                    <li>Added blurred background effect.</li>
+                    <li>Fixed performance issues.</li>
+                    <li>Improved network optimizations.</li>
+                    <li>Enhanced search functionality.</li>
+                    <li>Added custom scrollbar UI.</li>
+                    <li>Added expander.</li>
+                    <li>Added check FFlags.</li>
+                    <li>Added added more options.</li>
+                    <li>Added a more blue effect on text.</li>
+                </ul>
+            </article>
         </div>
     </section>
+
 
     <footer class="footer">
         <p>&copy; 2025 FFlag Tracker. Made by the Plexity TEAM.</p>
