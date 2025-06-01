@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roblox - FFlag Tracker</title>
+    <link rel="icon" href="assets/Icon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+    ::-webkit-scrollbar {
+        width: 1px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #6b7280;
+        border-radius: 6px;
+        border: 3px solid #1a1a1a;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #9ca3af;
+    }
+
+        :root {
+            --primary: #2f68ff;
+            --primary-hover: #1d4fd1;
+            --bg-start: #0f1015;
+            --bg-end: #191b24;
+            --text-main: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, var(--bg-start), var(--bg-end));
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+            header img {
+                width: 80px;
+                margin-bottom: 1rem;
+                animation: float 2.5s ease-in-out infinite;
+                will-change: transform;
+            }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .download-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 2.2rem;
+            background: linear-gradient(135deg, var(--primary), #3a7bff);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+            outline: none;
+        }
+
+            .download-btn:hover {
+                background: linear-gradient(135deg, var(--primary-hover), #2f6fe9);
+                transform: scale(1.07);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            .download-btn:active {
+                transform: scale(0.98);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        section {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 3rem;
+        }
+
+        .features,
+        .changelog,
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card,
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s ease;
+        }
+
+            .card:hover,
+            .glass:hover {
+                transform: translateY(-4px);
+            }
+
+            .card h3,
+            .glass h3 {
+                color: var(--primary);
+                margin-bottom: 0.6rem;
+                font-weight: 600;
+            }
+
+            .card p,
+            .glass p {
+                color: #cccccc;
+                font-size: 0.98rem;
+            }
+
+        .screenshots img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #2f2f2f;
+            margin-top: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+            .screenshots img:hover {
+                transform: scale(1.02);
+            }
+
+        .footer {
+            text-align: center;
+            margin-top: auto;
+            padding-top: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="assets/Icon.png" alt="Ignitify Logo" />
+        <h1>FFlag Communitys!</h1>
+        <nav class="btn-group" aria-label="Discord Servers">
+            <a href="https://discord.gg/uNy9sp8Taa" aria-label="Stoofs Basement" target="_blank" rel="noopener noreferrer">
+                <button class="download-btn" type="button">Stoofs Server</button>
+            </a>
+            <a href="https://discord.gg/mZkDzrbkpQ" aria-label="Plexity Server" target="_blank" rel="noopener noreferrer">
+                <button class="download-btn" type="button">Plexity Server</button>
+            </a>
+            <a href="https://discord.gg/4yP5GPmVFG" aria-label="Scrooms Lounge" target="_blank" rel="noopener noreferrer">
+                <button class="download-btn" type="button">Scrooms Lounge</button>
+            </a>
+        </nav>
+    </header>
+
+    <section class="features" aria-label="Features">
+        <article class="card">
+            <h3>Search for FFlags</h3>
+            <p>Search for FFlags from the <a href="https://github.com/MaximumADHD/Roblox-FFlag-Tracker" target="_blank" rel="noopener noreferrer">MaximumADHD GitHub Repository</a> BETTER!</p>
+        </article>
+    </section>
+
+<section class="screenshots" aria-label="Screenshots" style="max-width: 950px; margin: 2rem auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; position: relative;">
+    <div class="glass" style="
+      background: rgba(20, 20, 20, 0.9);
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      color: #eee;
+      position: relative;
+      z-index: 20;
+  ">
+        <h3 style="margin-top: 0; font-weight: 700; font-size: 1.8rem; letter-spacing: 0.05em;">FFlag Search</h3>
+        <p style="margin-bottom: 1.5rem; color: #bbb;">Search for Roblox FFlags to add to Bootstrappers like Bloxstrap,Voidstrap,Plexity,Froststrap +</p>
+
+        <button id="blurToggle" style="
+        margin-bottom: 15px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        border: none;
+        background: #5A9DF9;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      ">
+            Blur Background
+        </button>
+
+        <input type="text" id="searchBox" placeholder="Search FFlags..."
+               style="
+          width: 100%;
+          padding: 14px 16px;
+          font-size: 1rem;
+          border-radius: 10px;
+          border: 1.5px solid #444;
+          background: #222;
+          color: #eee;
+          transition: border-color 0.3s ease;
+          outline-offset: 2px;
+          box-sizing: border-box;
+          font-family: monospace;
+        "
+               disabled>
+
+        <div id="resultsCount" style="margin-top: 8px; font-size: 0.9rem; color: #aaa; min-height: 1.2em;">Loading data...</div>
+
+        <div id="lastUpdated" style="font-size: 0.8rem; color: #666; margin-top: 4px; min-height: 1.2em;"></div>
+
+
+        <pre id="jsonContent" style="
+        max-height: 880px;
+        overflow: auto;
+        background: #111;
+        padding: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        margin-top: 18px;
+        font-family: monospace;
+        line-height: 1.3;
+        white-space: pre;
+        word-wrap: normal;
+        position: relative;
+        z-index: 25;
+      ">Loading...</pre>
+    </div>
+
+  <!-- Blur overlay, initially hidden -->
+  <div id="blurOverlay" style="
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.3);
+    z-index: 10;
+    display: none;
+  "></div>
+</section>
+
+<script>
+  const searchBox = document.getElementById("searchBox");
+  const jsonContent = document.getElementById("jsonContent");
+  const resultsCount = document.getElementById("resultsCount");
+  const lastUpdated = document.getElementById("lastUpdated");
+  const blurToggle = document.getElementById("blurToggle");
+  const blurOverlay = document.getElementById("blurOverlay");
+
+  let originalData = {};
+  let debounceTimer;
+  let isBlurred = false;
+
+  function syntaxHighlight(json) {
+      if (typeof json !== "string") {
+          json = JSON.stringify(json, null, 2);
+      }
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?:\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
+          let cls = 'number';
+          if (/^"/.test(match)) {
+              cls = /:$/.test(match) ? 'key' : 'string';
+          } else if (/true|false/.test(match)) {
+              cls = 'boolean';
+          } else if (/null/.test(match)) {
+              cls = 'null';
+          }
+          return `<span class="${cls}">${match}</span>`;
+      });
+  }
+
+  function updateDisplay(filtered) {
+      jsonContent.innerHTML = syntaxHighlight(filtered);
+      resultsCount.textContent = `Showing ${Object.keys(filtered).length} result${Object.keys(filtered).length === 1 ? '' : 's'}`;
+  }
+
+    async function loadData() {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 sec timeout
+
+        try {
+            const response = await fetch("https://raw.githubusercontent.com/MaximumADHD/Roblox-FFlag-Tracker/main/PCDesktopClient.json", {
+                signal: controller.signal,
+                cache: "no-cache" // force fresh data
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            }
+
+            originalData = await response.json();
+            updateDisplay(originalData);
+            searchBox.disabled = false;
+
+            fetchLastUpdated();
+
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                jsonContent.textContent = "Request timed out.";
+            } else {
+                jsonContent.textContent = "Failed to load JSON.";
+            }
+            resultsCount.textContent = '';
+            console.error("Error loading JSON:", error);
+        }
+    }
+
+    loadData();
+
+
+    async function fetchLastUpdated() {
+        try {
+            // GitHub API to get commits for this file
+            const apiUrl = 'https://api.github.com/repos/MaximumADHD/Roblox-FFlag-Tracker/commits?path=PCDesktopClient.json&page=1&per_page=1';
+            const res = await fetch(apiUrl);
+            if (!res.ok) throw new Error('Failed to fetch last updated date');
+
+            const commits = await res.json();
+            if (commits.length > 0) {
+                const lastDate = new Date(commits[0].commit.committer.date);
+                lastUpdated.textContent = `Github updated: ${lastDate.toLocaleString()}`;
+            } else {
+                lastUpdated.textContent = 'Github updated: unknown';
+            }
+        } catch (e) {
+            lastUpdated.textContent = '';
+            console.error("Error fetching Github updated date:", e);
+        }
+    }
+
+
+  searchBox.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+          const query = searchBox.value.toLowerCase();
+          const filtered = Object.fromEntries(
+              Object.entries(originalData).filter(([k, v]) =>
+                  k.toLowerCase().includes(query) || String(v).toLowerCase().includes(query)
+              )
+          );
+          updateDisplay(filtered);
+      }, 150);
+  });
+
+  blurToggle.addEventListener("click", () => {
+      isBlurred = !isBlurred;
+      if (isBlurred) {
+          blurOverlay.style.display = "block";
+          blurToggle.textContent = "Remove Blur";
+      } else {
+          blurOverlay.style.display = "none";
+          blurToggle.textContent = "Blur Background";
+      }
+  });
+</script>
+
+<style>
+  .key {
+      color: #FF7F50;
+  }
+  .string {
+      color: #9CDCFE;
+  }
+  .number {
+      color: #B5CEA8;
+  }
+  .boolean {
+      color: #D16969;
+  }
+  .null {
+      color: #569CD6;
+  }
+
+  #searchBox:focus {
+      border-color: #5A9DF9;
+      box-shadow: 0 0 8px #5A9DF9AA;
+      background: #1a1a1a;
+  }
+
+  #jsonContent::-webkit-scrollbar {
+      height: 20px;
+      width: 20px;
+  }
+  #jsonContent::-webkit-scrollbar-track {
+      background: #222;
+      border-radius: 12px;
+      margin: 2px 0;
+  }
+  #jsonContent::-webkit-scrollbar-thumb {
+      background-color: #5A9DF9;
+      border-radius: 12px;
+      border: 4px solid #222;
+  }
+  #jsonContent::-webkit-scrollbar-thumb:hover {
+      background-color: #3D7BE0;
+  }
+
+  #jsonContent {
+      scrollbar-width: thin;
+      scrollbar-color: #5A9DF9 #222;
+  }
+</style>
+
+    <section class="changelog" aria-label="Changelog">
+        <div class="glass">
+            <h3>Changelog</h3>
+            <p>v1.0.0 - Initial release.</p>
+            <p>5/31/2025 - Added Blur Background.</p>
+            <p>5/31/2025 - Fixed Performance Issuses.</p>
+            <p>5/31/2025 - Added Network Optimizes.</p>
+            <p>5/31/2025 - Made Searching Better.</p>
+            <p>5/31/2025 - Added Custom ScrollBar UI.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 FFlag Tracker. Made by the Plexity TEAM.</p>
+    </footer>
+</body>
+</html>
