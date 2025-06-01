@@ -26,20 +26,21 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background-color: #6b7280;
+            background-color: #1a1a1a;
             border-radius: 8px;
-            border: 2px solid #1a1a1a;
+            border: 2px solid Gray;
             transition: background-color 0.3s ease;
             will-change: background-color;
         }
 
             ::-webkit-scrollbar-thumb:hover {
-                background-color: #9ca3af;
+                background-color: #e5e7eb;
             }
 
             ::-webkit-scrollbar-thumb:active {
-                background-color: #b0b7bf;
+                background-color: #d1d5db;
             }
+
 
         html {
             scroll-behavior: smooth;
@@ -52,7 +53,7 @@
             --bg-end: #191b24;
             --text-main: #e0e0e0;
             --text-muted: #aaaaaa;
-            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(275, 255, 255, 0.05);
         }
 
         * {
@@ -75,13 +76,13 @@
 
         header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
             header img {
-                width: 80px;
+                width: 90px;
                 margin-bottom: 1rem;
-                animation: float 2.5s ease-in-out infinite;
+                animation: float 5s ease-in-out infinite;
                 will-change: transform;
             }
 
@@ -489,12 +490,7 @@
 
 
         async function loadData(url) {
-            searchBox.value = '';
-            searchBox.disabled = true;
-            jsonContent.textContent = "Loading...";
-            resultsCount.textContent = '';
-            lastUpdated.textContent = '';
-            isJsonData = true;
+            resetUIForLoading();
 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -508,53 +504,71 @@
                 clearTimeout(timeoutId);
 
                 if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
                 }
 
-                let data;
                 const contentType = response.headers.get('content-type') || '';
-
-                if (contentType.includes('application/json') || url.endsWith('.json')) {
-                    try {
-                        data = await response.json();
-                        isJsonData = true;
-                    } catch (err) {
-                        data = { error: `Failed to parse JSON response: ${err.message}` };
-                        isJsonData = true;
-                    }
-                } else if (url.endsWith('.txt')) {
-                    const text = await response.text();
-                    data = text;
-                    isJsonData = false;
-                } else {
-                    const text = await response.text();
-                    try {
-                        data = JSON.parse(text);
-                        isJsonData = true;
-                    } catch (err) {
-                        data = text;
-                        isJsonData = false;
-                    }
-                }
+                const data = await parseResponse(response, contentType, url);
 
                 originalData = (isJsonData && typeof data === 'object') ? data : {};
-
                 updateDisplay(data);
-                searchBox.disabled = false;
 
-                if (!isJsonData) {
-                    resultsCount.textContent = '';
-                }
+                searchBox.disabled = false;
+                if (!isJsonData) resultsCount.textContent = '';
 
                 fetchLastUpdated(url);
-
             } catch (error) {
-                jsonContent.textContent = "Error loading data: " + error.message;
-                resultsCount.textContent = '';
-                searchBox.disabled = true;
-                lastUpdated.textContent = '';
+                handleError(error);
             }
         }
+
+        // Helper Functions
+
+        function resetUIForLoading() {
+            searchBox.value = '';
+            searchBox.disabled = true;
+            jsonContent.textContent = 'Loading...';
+            resultsCount.textContent = '';
+            lastUpdated.textContent = '';
+            isJsonData = true;
+        }
+
+        async function parseResponse(response, contentType, url) {
+            try {
+                if (contentType.includes('application/json') || url.endsWith('.json')) {
+                    isJsonData = true;
+                    return await response.json();
+                }
+
+                const text = await response.text();
+
+                if (url.endsWith('.txt')) {
+                    isJsonData = false;
+                    return text;
+                }
+
+                // Try to parse unknown content type as JSON
+                try {
+                    const parsed = JSON.parse(text);
+                    isJsonData = true;
+                    return parsed;
+                } catch {
+                    isJsonData = false;
+                    return text;
+                }
+            } catch (err) {
+                isJsonData = true;
+                return { error: `Failed to parse response: ${err.message}` };
+            }
+        }
+
+        function handleError(error) {
+            jsonContent.textContent = `Error loading data: ${error.message}`;
+            resultsCount.textContent = '';
+            searchBox.disabled = true;
+            lastUpdated.textContent = '';
+        }
+
 
 
 
@@ -589,12 +603,6 @@
                 }
             }
         }
-
-
-
-
-
-
 
         async function fetchLastUpdated(url) {
             try {
@@ -704,83 +712,161 @@
             color: #9cdcfe;
         }
     </style>
+    <div id="fflagModal" class="modal">
+        <div class="modal-content">
+            <h3>Enter FFlags</h3>
+            <input type="text"
+                   id="fflagInput"
+                   placeholder="(e.g. FFlagDebugDisplayFPS)"
+                   class="modal-input" />
 
-    <div id="fflagModal" style="
-  display: none;
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-">
-        <div style="
-    background-color: #fff;
-    margin: 50% auto;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  ">
-            <h3 style="
-      margin-top: 0;
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: #222;
-      margin-bottom: 20px;
-    ">
-                Enter FFlags
-            </h3>
-            <input type="text" id="fflagInput" placeholder="(e.g. FFlagDebugDisplayFPS)" style="
-      width: 100%;
-      padding: 15px 50px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
-      outline-offset: 1px;
-    " onfocus="this.style.borderColor='#007bff'" onblur="this.style.borderColor='#ddd'">
+            <label for="fileImporter" class="file-input-label">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     height="20"
+                     width="20"
+                     fill="currentColor"
+                     style="margin-right: 8px"
+                     viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5-.5h3v-3a.5.5 0 0 1 1 0v3h3a.5.5 0 0 1 0 1H5v3a.5.5 0 0 1-1 0v-3H1a.5.5 0 0 1-.5-.5z" />
+                </svg>
+                Choose File
+            </label>
+            <input type="file" id="fileImporter" accept=".txt,.json" multiple />
 
-            <div style="
-      display: flex;
-      justify-content: flex-end;
-      gap: 15px;
-      margin-top: 25px;
-    ">
-                <button id="cancelFflagBtn" style="
-        padding: 10px 20px;
-        background-color: #f0f0f0;
-        color: #555;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      " onmouseover="this.style.backgroundColor='#d9d9d9'" onmouseout="this.style.backgroundColor='#f0f0f0'">
-                    Cancel
-                </button>
-                <button id="submitFflagBtn" style="
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      " onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
-                    Search
-                </button>
+            <div class="modal-actions">
+                <button id="cancelFflagBtn" class="btn btn-cancel">Cancel</button>
+                <button id="submitFflagBtn" class="btn btn-submit">Search</button>
             </div>
         </div>
     </div>
 
+    <script>
+        document.getElementById('fileImporter').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result.trim();
+                document.getElementById('fflagInput').value = text;
+            };
+            reader.readAsText(file);
+        });
+    </script>
 
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .modal-content {
+            background-color: #2c2c2c;
+            margin: 10% auto;
+            padding: 24px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            color: #f1f1f1;
+        }
+
+            .modal-content h3 {
+                margin-top: 0;
+                margin-bottom: 20px;
+                font-size: 1.6rem;
+                font-weight: 700;
+            }
+
+        .modal-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #444;
+            background-color: #1e1e1e;
+            color: #eee;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+            .modal-input:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cancel {
+            background-color: #444;
+            color: #ccc;
+        }
+
+            .btn-cancel:hover {
+                background-color: #555;
+            }
+
+        .btn-submit {
+            background-color: #007bff;
+            color: #f1f1f1;
+        }
+
+            .btn-submit:hover {
+                background-color: #0056b3;
+            }
+
+        #fileImporter {
+            display: none;
+        }
+
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            padding: 10px 18px;
+            background-color: #444;
+            color: #eee;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+        }
+
+            .file-input-label:hover,
+            .file-input-label:focus {
+                background-color: #007bff;
+                border-color: #0056b3;
+                color: #f1f1f1;
+                outline: none;
+            }
+    </style>
 
     <script>
         const checkFFlagsBtn = document.getElementById("checkFFlagsBtn");
@@ -807,46 +893,57 @@
 
         submitFflagBtn.addEventListener("click", async () => {
             let rawInput = fflagInput.value.trim();
-
             if (!rawInput) {
                 alert("Please enter at least one FFlag to search.");
                 return;
             }
 
             let keys = [];
+            let invalidKeys = [];
+            const isJsonLike = rawInput.includes("{") && rawInput.includes("}") || rawInput.includes(":");
 
-            const looksLikeJson = rawInput.includes("{") && rawInput.includes("}") || rawInput.includes(":");
-
-            if (looksLikeJson) {
+            if (isJsonLike) {
                 if (rawInput.startsWith("{") && rawInput.endsWith("}")) {
                     rawInput = rawInput.slice(1, -1).trim();
                 }
+
                 const keyRegex = /["']?([\w$]+)["']?\s*:/g;
                 let match;
                 while ((match = keyRegex.exec(rawInput)) !== null) {
                     keys.push(match[1]);
                 }
+
                 if (keys.length === 0) {
                     alert("No valid FFlag keys found in input.");
                     return;
                 }
             } else {
-                if (rawInput.includes(",")) {
-                    keys = rawInput.split(",").map(k => k.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
-                } else {
-                    keys = [rawInput];
-                }
+                keys = rawInput.includes(",")
+                    ? rawInput.split(",").map(k => k.trim().replace(/^["']|["']$/g, ""))
+                    : [rawInput];
+
+                // Filter invalid keys (non-alphanumeric + _ and $ allowed)
+                const validKeyRegex = /^[\w$]+$/;
+                invalidKeys = keys.filter(k => !validKeyRegex.test(k));
+                keys = keys.filter(k => validKeyRegex.test(k));
             }
 
-            const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            if (keys.length === 0) {
+                alert(`No valid FFlag keys found.${invalidKeys.length > 0 ? " Invalid keys: " + invalidKeys.join(", ") : ""}`);
+                return;
+            }
 
+            // Escape regex special characters helper
+            const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            // Build regex patterns for matching FFlag entries in source files
             const regexes = keys.map(key => {
                 const escapedKey = escapeRegex(key);
                 return new RegExp(
-                    `^\\s*["']?${escapedKey}["']?\\s*:\\s*` +
-                    `(` +
+                    `^\\s*["']?${escapedKey}["']?\\s*:\\s*(` +
                     `true|false|` +
-                    `"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|` +
+                    `"(?:[^"\\\\]|\\\\.)*"|` +
+                    `'(?:[^'\\\\]|\\\\.)*'|` +
                     `\\d+(?:\\.\\d+)?` +
                     `)\\s*,?`,
                     "i"
@@ -854,70 +951,110 @@
             });
 
             fflagModal.style.display = "none";
+            jsonContent.innerHTML = "";
+            resultsCount.textContent = "Searching...";
+
             const options = Array.from(jsonSelector.options);
-            let results = [];
+            const results = [];
+            const fetchErrors = [];
 
+            // Fetch each source and search for matches
             for (const option of options) {
-                const url = option.value;
                 try {
-                    const response = await fetch(url, { cache: "no-cache" });
-                    const data = await response.text();
-                    const lines = data.split(/\r?\n/);
+                    const response = await fetch(option.value, { cache: "no-cache" });
+                    const text = await response.text();
+                    const lines = text.split(/\r?\n/);
 
-                    let matchedLines = [];
+                    let matched = [];
                     for (const regex of regexes) {
-                        matchedLines.push(...lines.filter(line => regex.test(line)));
+                        matched.push(...lines.filter(line => regex.test(line)));
                     }
-                    matchedLines = [...new Set(matchedLines)];
 
-                    if (matchedLines.length > 0) {
+                    matched = [...new Set(matched)]; // Remove duplicates
+
+                    if (matched.length > 0) {
                         results.push({
                             source: option.textContent,
-                            matches: matchedLines
+                            matches: matched
                         });
                     }
                 } catch (err) {
-                    results.push({
-                        source: option.textContent,
-                        matches: [`Error fetching from ${url}: ${err.message}`]
-                    });
+                    fetchErrors.push(`Error fetching from ${option.textContent} (${option.value}): ${err.message}`);
                 }
             }
 
-            let foundKeys = new Set();
-            for (const res of results) {
-                for (const line of res.matches) {
-                    const keyMatch = line.match(/^\s*["']?([\w$]+)["']?\s*:/);
-                    if (keyMatch) {
-                        foundKeys.add(keyMatch[1]);
-                    }
-                }
-            }
+            // Extract keys found in results
+            const foundKeys = new Set();
+            results.forEach(res => {
+                res.matches.forEach(line => {
+                    const match = line.match(/^\s*["']?([\w$]+)["']?\s*:/);
+                    if (match) foundKeys.add(match[1]);
+                });
+            });
 
-            const notFoundKeys = keys.filter(k => !foundKeys.has(k));
+            const notFound = keys.filter(k => !foundKeys.has(k));
 
-            if (results.length === 0 && notFoundKeys.length === keys.length) {
+            // Helper styles for output sections
+            const styles = {
+                source: "color:#5A9DF9; font-weight:bold;",
+                codeBlock: "white-space: pre-wrap; background:#f4f4f4; padding:8px; border-radius:4px; display:block;",
+                error: "color:darkred; margin-top:1em;",
+                warning: "color:orange; margin-top:1em;",
+                notFound: "color:red; margin-top:1em;"
+            };
+
+
+            // Display results
+            jsonContent.innerHTML = "";
+
+            if (results.length === 0 && notFound.length === keys.length) {
                 jsonContent.textContent = `No matches found for [${keys.join(", ")}] in any FFlag sources.`;
             } else {
-                jsonContent.innerHTML = "";
+                // Show matched results
+                results.forEach(result => {
+                    jsonContent.innerHTML += `
+                                    <div style="margin-bottom:1em;">
+                                        <strong style="color:#5A9DF9;">${result.source}</strong><br>
+                                        <code style="white-space: pre-wrap;">${result.matches.join("\n")}</code>
+                                    </div>`;
+                });
 
-                if (results.length > 0) {
-                    jsonContent.innerHTML += results.map(result => {
-                        return `<div style="margin-bottom:1em;">
-                                            <strong style="color:#5A9DF9;">${result.source}</strong><br>
-                                            <code style="white-space: pre-wrap;">${result.matches.join("\n")}</code>
-                                        </div>`;
-                    }).join("");
+                // Show not found keys
+                if (notFound.length > 0) {
+                    jsonContent.innerHTML += `
+                                    <div style="margin-top:1em; color:red;">
+                                        <strong>Not found FFlags:</strong><br>
+                                        ${notFound.map(k => `<code>${k}</code>`).join(", ")}
+                                    </div>`;
                 }
 
-                if (notFoundKeys.length > 0) {
-                    jsonContent.innerHTML += `<div style="margin-top:1em; color:red;">
-                                        <strong>Not found FFlags:</strong><br> ${notFoundKeys.map(k => `<code>${k}</code>`).join(", ")}
+                // Show invalid keys
+                if (invalidKeys.length > 0) {
+                    jsonContent.innerHTML += `
+                                    <div style="margin-top:1em; color:orange;">
+                                        <strong>Invalid keys ignored:</strong><br>
+                                        ${invalidKeys.map(k => `<code>${k}</code>`).join(", ")}
                                     </div>`;
                 }
             }
 
-            resultsCount.textContent = `Checked ${options.length} sources. Found ${results.reduce((acc, r) => acc + r.matches.length, 0)} result(s).`;
+            // Show fetch errors if any
+            if (fetchErrors.length > 0) {
+                jsonContent.innerHTML += `
+                                <div style="margin-top:1em; color:darkred;">
+                                    <strong>Fetch Errors:</strong><br>
+                                    ${fetchErrors.map(err => `<code>${err}</code>`).join("<br>")}
+                                </div>`;
+            }
+
+            // Show summary
+            const totalMatches = results.reduce((acc, r) => acc + r.matches.length, 0);
+            resultsCount.textContent =
+                `Checked ${options.length} source${options.length !== 1 ? "s" : ""}. ` +
+                `Searched keys: ${keys.length + invalidKeys.length} ` +
+                `(Valid: ${keys.length}, Invalid: ${invalidKeys.length}). ` +
+                `Found: ${foundKeys.size}, Not found: ${notFound.length}. ` +
+                `Total matches: ${totalMatches}.`;
         });
     </script>
 
@@ -925,26 +1062,28 @@
         <div class="glass">
             <h2>Changelog</h2>
 
-            <article class="version" aria-labelledby="version-1-0-2">
-                <h3 id="version-1-0-2"><strong>v1.0.2</strong> <time datetime="2025-05-31">May 31, 2025</time></h3>
+            <article class="version" aria-labelledby="version-1-0-3">
+                <h3 id="version-1-0-3"><strong>v1.0.3</strong> <time datetime="2025-06-01">June 1, 2025</time></h3>
                 <ul>
-                    <li>Added blurred background effect.</li>
-                    <li>Fixed performance issues.</li>
-                    <li>Improved network optimizations.</li>
-                    <li>Enhanced search functionality.</li>
-                    <li>Added custom scrollbar UI.</li>
-                    <li>Added expander.</li>
-                    <li>Added check FFlags.</li>
-                    <li>Added added more options.</li>
-                    <li>Added a more blue effect on text.</li>
+                    <li>Introduced a sleek blurred background effect.</li>
+                    <li>Resolved key performance bottlenecks.</li>
+                    <li>Optimized network handling for faster response.</li>
+                    <li>Enhanced search with smarter filtering.</li>
+                    <li>Added a custom-designed scrollbar for better UX.</li>
+                    <li>Implemented expandable sections for cleaner navigation.</li>
+                    <li>Integrated feature flag checks for smoother updates.</li>
+                    <li>Expanded available options to give you more control.</li>
+                    <li>Refined text styling with a subtle blue tint.</li>
                 </ul>
             </article>
         </div>
     </section>
 
 
-    <footer class="footer">
-        <p>&copy; 2025 FFlag Tracker. Made by the Plexity TEAM.</p>
+
+    <footer class="footer" role="contentinfo" aria-label="Site footer">
+        <p>&copy; 2025 <strong>FFlag Tracker</strong>. Made with ❤️ by the <a href="#" aria-label="Plexity TEAM homepage" class="footer-link">Plexity TEAM</a>.</p>
     </footer>
+
 </body>
 </html>
