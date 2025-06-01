@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta property="og:title" content="Roblox - FFlag Tracker" />
-<meta property="og:description" content="🔵 Track the latest Roblox FFlags with ease!" />
-<meta property="og:url" content="https://fflagtracker.netlify.app" />
-<meta property="og:type" content="website" />
-<meta name="theme-color" content="#007bff" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="💙 Roblox FFlag Tracker — Your Blue Hub for Updates!" />
-<meta name="twitter:description" content="🔵 Track the latest Roblox Feature Flags with ease and stay ahead of every update!" />
-<title>Roblox - FFlag Tracker</title>
-<link rel="icon" href="assets/Icon.png" type="image/x-icon">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-<style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Roblox - FFlag Tracker" />
+    <meta property="og:description" content="🔵 Track the latest Roblox FFlags with ease!" />
+    <meta property="og:url" content="https://fflagtracker.netlify.app" />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#007bff" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="💙 Roblox FFlag Tracker — Your Blue Hub for Updates!" />
+    <meta name="twitter:description" content="🔵 Track the latest Roblox Feature Flags with ease and stay ahead of every update!" />
+    <title>Roblox - FFlag Tracker</title>
+    <link rel="icon" href="assets/Icon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+
+
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -118,6 +120,7 @@
             transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
             outline: none;
         }
+
         .download-btn {
             transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -159,6 +162,7 @@
             border-radius: 14px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
             transition: transform 0.2s ease;
+            transition: max-height 0.5s ease, box-shadow 0.3s ease, transform 0.3s ease;
         }
 
             .card:hover,
@@ -220,7 +224,6 @@
             </a>
         </nav>
     </header>
-
     <section class="features" aria-label="Features">
         <article class="card">
             <h3>Search for FFlags</h3>
@@ -228,35 +231,70 @@
         </article>
     </section>
 
-    <section class="screenshots" aria-label="Screenshots" style="max-width: 950px; margin: 2rem auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; position: relative;">
-        <div class="glass" style="
-      background: rgba(20, 20, 20, 0.9);
-      padding: 25px 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      color: #eee;
-      position: relative;
-      z-index: 20;
+    <section class="screenshots" aria-label="Screenshots"
+             style="
+  max-width: 1000px;
+  margin: 2rem auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  padding: 0 10px;
+  box-sizing: border-box;
+">
+        <div class="glass"
+             style="
+    background: rgba(20, 20, 20, 0.9);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    color: #eee;
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 900px;
+    height: auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-width: 280px;
+    transition: max-height 0.5s ease, box-shadow 0.3s ease;
   ">
             <h3 style="margin-top: 0; font-weight: 700; font-size: 1.8rem; letter-spacing: 0.05em;">FFlag Search</h3>
-            <p style="margin-bottom: 1.5rem; color: #bbb;">Search for Roblox FFlags to add to Bootstrappers like Bloxstrap, Voidstrap, Plexity, Froststrap +</p>
+            <p style="margin-bottom: 1.5rem; color: #bbb;">
+                Search for Roblox FFlags to add to Bootstrappers like Bloxstrap, Voidstrap, Plexity, Froststrap +
+            </p>
 
             <button id="blurToggle" class="download-btn" style="
-
-        margin-bottom: 15px;
-        padding: 5px 8px;
-        border-radius: 7px;
-        border: none;
-        background: #5A9DF9;
-        color: white;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      ">
+      margin-bottom: 15px;
+      padding: 5px 8px;
+      border-radius: 7px;
+      border: none;
+      background: #5A9DF9;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-width: 110px;
+    ">
                 Blur Background
             </button>
+
+            <button id="zoomToggle" class="download-btn" style="
+      margin-bottom: 15px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: none;
+      background: #5A9DF9;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-width: 110px;
+    ">
+                Expand
+            </button>
+
             <select id="jsonSelector" style="
       width: 100%;
       padding: 10px 15px;
@@ -268,6 +306,7 @@
       font-weight: 600;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       cursor: pointer;
+      box-sizing: border-box;
     ">
                 <option value="https://raw.githubusercontent.com/MaximumADHD/Roblox-FFlag-Tracker/main/PCDesktopClient.json">PCDesktopClient.json</option>
                 <option value="https://raw.githubusercontent.com/MaximumADHD/Roblox-FFlag-Tracker/main/PCClientBootstrapper.json">PCClientBootstrapper.json</option>
@@ -276,18 +315,18 @@
 
             <input type="text" id="searchBox" placeholder="Search FFlags..."
                    style="
-          width: 100%;
-          padding: 14px 16px;
-          font-size: 1rem;
-          border-radius: 10px;
-          border: 1.5px solid #444;
-          background: #222;
-          color: #eee;
-          transition: border-color 0.3s ease;
-          outline-offset: 2px;
-          box-sizing: border-box;
-          font-family: monospace;
-        "
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1.5px solid #444;
+      background: #222;
+      color: #eee;
+      transition: border-color 0.3s ease;
+      outline-offset: 2px;
+      box-sizing: border-box;
+      font-family: monospace;
+    "
                    disabled>
 
             <div id="resultsCount" style="margin-top: 8px; font-size: 0.9rem; color: #aaa; min-height: 1.2em;">Loading data...</div>
@@ -295,20 +334,23 @@
             <div id="lastUpdated" style="font-size: 0.8rem; color: #666; margin-top: 4px; min-height: 1.2em;"></div>
 
             <pre id="jsonContent" style="
-        max-height: 880px;
-        overflow: auto;
-        background: #111;
-        padding: 20px;
-        border-radius: 12px;
-        font-size: 14px;
-        margin-top: 18px;
-        font-family: monospace;
-        line-height: 1.3;
-        white-space: pre;
-        word-wrap: normal;
-        position: relative;
-        z-index: 25;
-      ">Loading...</pre>
+      max-height: 500px;
+      overflow: auto;
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-top: 18px;
+      font-family: monospace;
+      line-height: 1.3;
+      white-space: pre;
+      word-wrap: normal;
+      position: relative;
+      z-index: 25;
+      transition: max-height 0.5s ease, opacity 0.4s ease;
+      opacity: 1;
+      box-sizing: border-box;
+    ">Loading...</pre>
         </div>
 
         <div id="blurOverlay" style="
@@ -329,11 +371,14 @@
         const blurToggle = document.getElementById("blurToggle");
         const blurOverlay = document.getElementById("blurOverlay");
         const jsonSelector = document.getElementById("jsonSelector");
+        const zoomToggle = document.getElementById("zoomToggle");
+        const glassDiv = document.querySelector(".glass");
 
         let originalData = {};
         let debounceTimer;
         let isBlurred = false;
         let isJsonData = true;
+        let isZoomed = false;
 
         function syntaxHighlight(json) {
             if (typeof json !== "string") {
@@ -417,7 +462,6 @@
                 updateDisplay(data);
                 searchBox.disabled = false;
 
-
                 if (!isJsonData) {
                     resultsCount.textContent = '';
                 }
@@ -425,73 +469,62 @@
                 fetchLastUpdated(url);
 
             } catch (error) {
-                if (error.name === 'AbortError') {
-                    jsonContent.textContent = "Request timed out.";
-                } else {
-                    jsonContent.textContent = "Failed to load data.";
-                }
+                jsonContent.textContent = "Error loading data: " + error.message;
                 resultsCount.textContent = '';
-                lastUpdated.textContent = '';
-                console.error("Error loading data:", error);
                 searchBox.disabled = true;
+                lastUpdated.textContent = '';
             }
         }
 
-        async function fetchLastUpdated(fileUrl) {
+        async function fetchLastUpdated(url) {
+            // Attempt to get last modified header
             try {
-                const regex = /https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.+)/;
-                const match = fileUrl.match(regex);
-                if (!match) {
+                const response = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
+                if (response.ok) {
+                    const lastMod = response.headers.get('last-modified');
+                    if (lastMod) {
+                        const date = new Date(lastMod);
+                        lastUpdated.textContent = `Last updated: ${date.toLocaleString()}`;
+                    } else {
+                        lastUpdated.textContent = '';
+                    }
+                } else {
                     lastUpdated.textContent = '';
+                }
+            } catch {
+                lastUpdated.textContent = '';
+            }
+        }
+
+        searchBox.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                if (!originalData || Object.keys(originalData).length === 0) {
+                    return;
+                }
+                const query = searchBox.value.trim().toLowerCase();
+                if (!query) {
+                    updateDisplay(originalData);
                     return;
                 }
 
-                const owner = match[1];
-                const repo = match[2];
-                const path = match[4];
-
-                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&page=1&per_page=1`;
-                const res = await fetch(apiUrl);
-
-                if (!res.ok) throw new Error('Failed to fetch last updated date');
-
-                const commits = await res.json();
-
-                if (commits.length > 0) {
-                    const lastDate = new Date(commits[0].commit.committer.date);
-                    lastUpdated.textContent = `Github updated: ${lastDate.toLocaleString()}`;
-                } else {
-                    lastUpdated.textContent = 'Github updated: unknown';
-                }
-            } catch (e) {
-                lastUpdated.textContent = '';
-                console.error("Error fetching Github updated date:", e);
-            }
-        }
-
-        searchBox.addEventListener("input", () => {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                const query = searchBox.value.toLowerCase();
-
                 if (isJsonData) {
-                    const filtered = Object.fromEntries(
-                        Object.entries(originalData).filter(([key, value]) => {
-                            if (key.toLowerCase().includes(query)) return true;
-                            if (typeof value === 'string' && value.toLowerCase().includes(query)) return true;
-                            return false;
-                        })
-                    );
+                    // Filter keys that include the search query
+                    const filtered = Object.keys(originalData).reduce((acc, key) => {
+                        if (key.toLowerCase().includes(query)) {
+                            acc[key] = originalData[key];
+                        }
+                        return acc;
+                    }, {});
                     updateDisplay(filtered);
                 } else {
                     const lines = originalData.split('\n');
                     const filteredLines = lines.filter(line => line.toLowerCase().includes(query));
-                    const filteredText = filteredLines.join('\n');
-                    updateDisplay(filteredText);
+                    updateDisplay(filteredLines.join('\n'));
+                    resultsCount.textContent = `Showing ${filteredLines.length} line${filteredLines.length === 1 ? '' : 's'}`;
                 }
-            }, 210);
+            }, 300);
         });
-
 
         blurToggle.addEventListener("click", () => {
             isBlurred = !isBlurred;
@@ -499,48 +532,54 @@
             blurToggle.textContent = isBlurred ? "Remove Blur" : "Blur Background";
         });
 
+        zoomToggle.addEventListener("click", () => {
+            isZoomed = !isZoomed;
+            if (isZoomed) {
+                glassDiv.style.height = "auto";
+                glassDiv.style.boxShadow = "0 16px 48px rgba(0, 0, 0, 0.75)";
+                glassDiv.style.transform = "scale(1.1)"; 
+                zoomToggle.textContent = "Shrink";
+            } else {
+                glassDiv.style.height = "auto";
+                glassDiv.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.4)";
+                glassDiv.style.transform = "scale(1)";
+                zoomToggle.textContent = "Expand";
+            }
+        });
+
+
         jsonSelector.addEventListener("change", () => {
             loadData(jsonSelector.value);
         });
 
+        // Initial load
         loadData(jsonSelector.value);
     </script>
 
     <style>
-        .key {
-            color: #ffa07a;
-        }
-
         .string {
-            color: #90ee90;
+            color: #d69d85;
         }
 
         .number {
-            color: #87cefa;
+            color: #b5cea8;
         }
 
         .boolean {
-            color: #ffb347;
+            color: #569cd6;
         }
 
         .null {
-            color: #d3d3d3;
+            color: #569cd6;
+            font-style: italic;
         }
 
-        #blurToggle:hover {
-            background-color: #3e7dd9;
+        .key {
+            color: #9cdcfe;
         }
-
-        #searchBox {
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-            #searchBox:focus {
-                border-color: #5a9df9;
-                outline: none;
-                box-shadow: 0 0 8px 2px rgba(90, 157, 249, 0.4);
-            }
     </style>
+
+
 
 
 
