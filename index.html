@@ -350,7 +350,7 @@
                 <option value="https://raw.githubusercontent.com/MaximumADHD/Roblox-FFlag-Tracker/main/AndroidApp.json">AndroidApp.json</option>
                 <option value="https://raw.githubusercontent.com/MaximumADHD/Roblox-FFlag-Tracker/main/PCStudioApp.json">PCStudioApp.json</option>
                 <option value="https://raw.githubusercontent.com/MaximumADHD/Roblox-FFlag-Tracker/main/PCStudioBootstrapper.json">PCStudioBootstrapper.json</option>
-                <option value="https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/FVariables.txt">FVariables.txt (This is buggy)</option>
+                <option value="https://raw.githubusercontent.com/DynamicFastFlag/DynamicFastFlag/refs/heads/main/FvaribleV2.json">FVariables.txt</option>
             </select>
 
             <input type="text" id="searchBox" placeholder="Search FFlags..."
@@ -1013,38 +1013,38 @@
                 // Show matched results
                 results.forEach(result => {
                     jsonContent.innerHTML += `
-                                    <div style="margin-bottom:1em;">
-                                        <strong style="color:#5A9DF9;">${result.source}</strong><br>
-                                        <code style="white-space: pre-wrap;">${result.matches.join("\n")}</code>
-                                    </div>`;
+                                                        <div style="margin-bottom:1em;">
+                                                            <strong style="color:#5A9DF9;">${result.source}</strong><br>
+                                                            <code style="white-space: pre-wrap;">${result.matches.join("\n")}</code>
+                                                        </div>`;
                 });
 
                 // Show not found keys
                 if (notFound.length > 0) {
                     jsonContent.innerHTML += `
-                                    <div style="margin-top:1em; color:red;">
-                                        <strong>Not found FFlags:</strong><br>
-                                        ${notFound.map(k => `<code>${k}</code>`).join(", ")}
-                                    </div>`;
+                                                        <div style="margin-top:1em; color:red;">
+                                                            <strong>Not found FFlags:</strong><br>
+                                                            ${notFound.map(k => `<code>${k}</code>`).join(", ")}
+                                                        </div>`;
                 }
 
                 // Show invalid keys
                 if (invalidKeys.length > 0) {
                     jsonContent.innerHTML += `
-                                    <div style="margin-top:1em; color:orange;">
-                                        <strong>Invalid keys ignored:</strong><br>
-                                        ${invalidKeys.map(k => `<code>${k}</code>`).join(", ")}
-                                    </div>`;
+                                                        <div style="margin-top:1em; color:orange;">
+                                                            <strong>Invalid keys ignored:</strong><br>
+                                                            ${invalidKeys.map(k => `<code>${k}</code>`).join(", ")}
+                                                        </div>`;
                 }
             }
 
             // Show fetch errors if any
             if (fetchErrors.length > 0) {
                 jsonContent.innerHTML += `
-                                <div style="margin-top:1em; color:darkred;">
-                                    <strong>Fetch Errors:</strong><br>
-                                    ${fetchErrors.map(err => `<code>${err}</code>`).join("<br>")}
-                                </div>`;
+                                                    <div style="margin-top:1em; color:darkred;">
+                                                        <strong>Fetch Errors:</strong><br>
+                                                        ${fetchErrors.map(err => `<code>${err}</code>`).join("<br>")}
+                                                    </div>`;
             }
 
             // Show summary
@@ -1058,22 +1058,18 @@
         });
     </script>
 
+
+
+
+
     <section class="changelog" aria-label="Changelog" role="region">
         <div class="glass">
             <h2>Changelog</h2>
 
-            <article class="version" aria-labelledby="version-1-0-3">
-                <h3 id="version-1-0-3"><strong>v1.0.3</strong> <time datetime="2025-06-01">June 1, 2025</time></h3>
+            <article class="version" aria-labelledby="version-1-0-4">
+                <h3 id="version-1-0-4"><strong>v1.0.4</strong> <time datetime="2025-06-08">June 8, 2025</time></h3>
                 <ul>
-                    <li>Introduced a sleek blurred background effect.</li>
-                    <li>Resolved key performance bottlenecks.</li>
-                    <li>Optimized network handling for faster response.</li>
-                    <li>Enhanced search with smarter filtering.</li>
-                    <li>Added a custom-designed scrollbar for better UX.</li>
-                    <li>Implemented expandable sections for cleaner navigation.</li>
-                    <li>Integrated feature flag checks for smoother updates.</li>
-                    <li>Expanded available options to give you more control.</li>
-                    <li>Refined text styling with a subtle blue tint.</li>
+                    <li>Fixed the FFlag Checker and the Variables.</li>
                 </ul>
             </article>
         </div>
